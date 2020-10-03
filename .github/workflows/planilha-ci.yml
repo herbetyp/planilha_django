@@ -52,6 +52,6 @@ jobs:
         poetry run pytest --cov=planilha
     - name: Posting Coverage
       env:
-        CODECOV_TOKEN: "81bd6bad-4b8a-4cc5-b558-1acba6bea06a"
+        CODECOV_TOKEN: "90036097-c686-4c7d-ac52-a4a9daef15c2"
       run: |
         poetry run codecov
