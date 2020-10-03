@@ -9,7 +9,7 @@ __Como Rodar o Projeto?__
 ```bash
 git clone https://github.com/Pbezerra-dev/planilha_django.git
 cd planilha_django
-cp contrib/env-sample .env
+python contrib/env_gen.py
 poetry shell
 poetry install
 docker-compose up -d
