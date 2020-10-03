@@ -1,3 +1,4 @@
+![CI](https://github.com/Pbezerra-dev/planilha_django/workflows/CI/badge.svg)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -9,7 +10,7 @@ __Como Rodar o Projeto?__
 ```bash
 git clone https://github.com/Pbezerra-dev/planilha_django.git
 cd planilha_django
-cp contrib/env-sample .env
+python contrib/env_gen.py
 poetry shell
 poetry install
 docker-compose up -d
