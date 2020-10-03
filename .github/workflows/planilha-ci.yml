@@ -46,3 +46,12 @@ jobs:
     - name: Lynt with Flake8
       run: |
         poetry run flake8 --config=.flake8
+
+    - name: Tests with Pytest
+      run: |
+        poetry run pytest --cov=planilha
+    - name: Posting Coverage
+      env:
+        CODECOV_TOKEN: "81bd6bad-4b8a-4cc5-b558-1acba6bea06a"
+      run: |
+        poetry run codecov
