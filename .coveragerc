@@ -1,0 +1,18 @@
+[run]
+source = planilha/
+
+omit =
+    */__init__.py
+    */__pycache__
+    */.venv/*
+    */venv/*
+    */.env
+    */settings.py
+    */manage.py
+    */wsgi.py
+    */asgi.py
+    */apps.py
+    */urls.py
+    */admin.py
+    */migrations/*
+    */tests/*
