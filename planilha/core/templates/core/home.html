@@ -2,4 +2,35 @@
 
 {% block title %}<title>Home</title>{% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+
+  <div class="card mt-5 mb-5">
+    <div class="card-header bg-dark"></div>
+    <div class="card-body">
+      <h2 class="text-center">Planilha De Gastos
+      <i class="far fa-edit"></i></h2>
+      <a class="btn btn-primary btn-sm float-right" href="#">Adicionar</a>
+    </div>
+  </div>
+  <div class="table table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Gasto</th>
+          <th>Data</th>
+          <th>Valor</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Gasto</td>
+          <td>Data</td>
+          <td>Valor</td>
+          <td class="float-right"><a class="btn btn-warning btn-sm" href="#">Alterar</a>
+          <a class="btn btn-danger btn-sm ml-1 text-white" href="#">Excluir</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock content %}
