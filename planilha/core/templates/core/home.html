@@ -4,33 +4,79 @@
 
 {% block content %}
 
-  <div class="card mt-5 mb-5">
+  <div class="mt-3">
+    {% include 'components/messages.html' %}
+  </div>
+  <div class="card mt-5">
     <div class="card-header bg-dark"></div>
-    <div class="card-body">
-      <h2 class="text-center">Planilha De Gastos
-      <i class="far fa-edit"></i></h2>
-      <a class="btn btn-primary btn-sm float-right" href="#">Adicionar</a>
+      <div class="card-body">
+        <h2 class="text-center">Planilha De Gastos <i class="far fa-edit"></i></h2>
+      </div>
+  </div>
+  <div class="mt-5 mb-3 text-right">
+    <a class="btn btn-primary btn-sm create" data-toggle="modal"
+    data-target="#create-spent" data-url={% url 'core:create' %}>Adicionar</a>
+  </div>
+  <div class="card">
+    <div class="card-body table-responsive p-0">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Data</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for spent in spents %}
+            <tr>
+              <td>{{ spent.spent }}</td>
+              <td>{{ spent.date|date:"d/m/Y" }}</td>
+              <td>R$ {{ spent.value }}</td>
+              <td
+                class="text-right"><a class="btn btn-warning btn-sm p-1 update" data-toggle="modal"
+                data-target="#update-spent" data-url={% url 'core:update' pk=spent.pk %}>Alterar</a>
+
+                <a class="btn btn-danger btn-sm p-1 text-white delete" data-toggle="modal"
+                data-target="#delete-spent" data-url={% url 'core:delete' pk=spent.pk %}>Excluir</a>
+              </td>
+            </tr>
+          {% empty %}
+            <td class="text-center text-danger text-uppercase" colspan="4">Não Ah Gastos Cadastrados</td>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
-  <div class="table table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Gasto</th>
-          <th>Data</th>
-          <th>Valor</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Gasto</td>
-          <td>Data</td>
-          <td>Valor</td>
-          <td class="float-right"><a class="btn btn-warning btn-sm" href="#">Alterar</a>
-          <a class="btn btn-danger btn-sm ml-1 text-white" href="#">Excluir</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  {% include 'core/modal-delete-spent.html' %}
+  {% include 'core/modal-update-spent.html' with form=form %}
+  {% include 'core/modal-create-spent.html' with form=form %}
+
 {% endblock content %}
+
+{% block js %}
+
+<script>
+  $(function() {
+    $('.delete').on('click', function() {
+      url = $(this).attr("data-url");
+      $('#modal-delete').prop('action', url);
+    });
+    $('.update').on('click', function() {
+      url = $(this).attr("data-url");
+      $('#modal-update').prop('action', url);
+
+      $.get(url, function(data) {
+        $('#id_spent').val(data.spent)
+        $('#id_value').val(data.value)
+        $('#id_date').val(data.date)
+      })
+    });
+    $('.create').on('click', function() {
+      url = $(this).attr("data-url");
+      $('#modal-create').prop('action', url);
+    });
+  });
+</script>
+
+{% endblock js %}

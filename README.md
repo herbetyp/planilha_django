@@ -24,7 +24,7 @@ python manage.py runserver
 
 *__Funcionalidades__*
 
-- [ ] CRUD dos gastos
+- [*] CRUD dos gastos
 - [ ] Sitema de login
-- [ ] Listagem dos gastos
+- [*] Listagem dos gastos
 - [ ] Cálculo dos gastos
