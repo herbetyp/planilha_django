@@ -205,6 +205,14 @@ python-versions = ">=3.5"
 version = "3.0.9"
 
 [[package]]
+category = "main"
+description = "Tweak the form field rendering in templates, not in python-level form definitions."
+name = "django-widget-tweaks"
+optional = false
+python-versions = "*"
+version = "1.4.8"
+
+[[package]]
 category = "dev"
 description = "A platform independent file lock."
 name = "filelock"
@@ -314,6 +322,17 @@ name = "mccabe"
 optional = false
 python-versions = "*"
 version = "0.6.1"
+
+[[package]]
+category = "dev"
+description = "Smart object creation facility for Django."
+name = "model-bakery"
+optional = false
+python-versions = "*"
+version = "1.1.1"
+
+[package.dependencies]
+django = ">=1.11.0"
 
 [[package]]
 category = "dev"
@@ -673,7 +692,7 @@ python-versions = "*"
 version = "0.2.5"
 
 [metadata]
-content-hash = "59ebe9a35124efde4b148b2455655a9d65fd38ddbf0f6527e4c2ed950e9a0aa5"
+content-hash = "5df52be4ce32772098dd3a09a1b1038813a2ec88932780fe88785266c506441b"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -790,6 +809,10 @@ django-extensions = [
     {file = "django-extensions-3.0.9.tar.gz", hash = "sha256:6809c89ca952f0e08d4e0766bc0101dfaf508d7649aced1180c091d737046ea7"},
     {file = "django_extensions-3.0.9-py3-none-any.whl", hash = "sha256:dc663652ac9460fd06580a973576820430c6d428720e874ae46b041fa63e0efa"},
 ]
+django-widget-tweaks = [
+    {file = "django-widget-tweaks-1.4.8.tar.gz", hash = "sha256:9f91ca4217199b7671971d3c1f323a2bec71a0c27dec6260b3c006fa541bc489"},
+    {file = "django_widget_tweaks-1.4.8-py2.py3-none-any.whl", hash = "sha256:f80bff4a8a59b278bb277a405a76a8b9a884e4bae7a6c70e78a39c626cd1c836"},
+]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
     {file = "filelock-3.0.12.tar.gz", hash = "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59"},
@@ -825,6 +848,10 @@ jedi = [
 mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
     {file = "mccabe-0.6.1.tar.gz", hash = "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"},
+]
+model-bakery = [
+    {file = "model_bakery-1.1.1-py2.py3-none-any.whl", hash = "sha256:320d9e78fad1605a08bfb93affae42ba027300e2e973a235e12b102f78e97f7d"},
+    {file = "model_bakery-1.1.1.tar.gz", hash = "sha256:e2f0522a4b7d3cc1b6f88e95ac87cefd9317516274bb126f54488f47fe3aaafd"},
 ]
 mypy-extensions = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},

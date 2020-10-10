@@ -1,0 +1,12 @@
+{% if form.non_field_errors %}
+  <div class="card bg-danger mb-3">
+    <div class="text-white bg-danger"></div>
+    {% for error in form.non_field_errors %}
+      <div class="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+        class="text-white" aria-hidden="true">&times;</span></button>
+        <p class="mb-0 text-white">{{ error }}</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
