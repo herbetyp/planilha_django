@@ -1,26 +1,111 @@
+from django.contrib import auth
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
 
 from planilha.core import forms
 from planilha.core import models
 
 
+def login_view(request):
+    form = AuthenticationForm()
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = AuthenticationForm(data=post)
+
+        if form.is_valid():
+            auth.login(request, form.get_user())
+
+            messages.success(request, 'Login realizado com sucesso.')
+            return redirect('core:home')
+
+        messages.error(
+            request, 'Usuário não encontrado. Verifique se preencheu corretamente.'
+        )
+        return redirect('core:login')
+
+    return render(request, 'core/login.html', {'form': form})
+
+
+@login_required
+def logout_view(request):
+    auth.logout(request)
+
+    messages.info(request, 'Você foi deslogado.')
+    return redirect('core:login')
+
+
+@login_required
 def home_view(request):
     form = forms.SpentForm()
-    spents = models.Spent.objects.all()
+    spents = models.Spent.objects.filter(user=request.user).values(
+        'pk', 'spent', 'date', 'value'
+    )
+    income = (
+        models.Income.objects.filter(user=request.user)
+        .values('income', 'save_percent')
+        .last()
+    )
+    total_spents = spents.aggregate(Sum('value')).get('value__sum')
+    income_gross = income.get('income')
+    save_percent = income.get('save_percent')
 
-    return render(request, 'core/home.html', {'spents': spents, 'form': form})
+    percent = income_gross * save_percent / 100
+    icome_subtracted_spents = (income_gross - total_spents) - percent
+
+    alive_save_percent = False
+    if total_spents > income_gross - percent:
+        alive_save_percent = True
+
+    return render(
+        request,
+        'core/home.html',
+        {
+            'spents': spents,
+            'form': form,
+            'income_gross': income_gross,
+            'total_spents': total_spents,
+            'save_percent': save_percent,
+            'percent': percent,
+            'icome_subtracted_spents': icome_subtracted_spents,
+            'alive_save_percent': alive_save_percent,
+        },
+    )
 
 
+@login_required
+def income_view(request):
+    if request.method == 'POST':
+        income_value = request.POST.get('income')
+        save_percent = request.POST.get('save_money')
+        income = models.Income.objects.filter(user=request.user)
+
+        if income.exists():
+            income.update(income=income_value, save_percent=save_percent)
+            messages.success(request, 'Renda bruta mensal ATUALIZADA com sucesso.')
+        else:
+            income.create(
+                user=request.user, income=income_value, save_percent=save_percent
+            )
+            messages.success(request, 'Renda bruta mensal SALVA com sucesso.')
+        return redirect('core:home')
+
+
+@login_required
 def delete_spent_view(request, pk):
     models.Spent.objects.get(pk=pk).delete()
 
-    messages.add_message(request, messages.SUCCESS, 'Gasto DELETADO com sucesso.')
+    messages.success(request, 'Gasto DELETADO com sucesso.')
     return redirect('core:home')
 
 
+@login_required
 def update_spent_view(request, pk):
     spent = models.Spent.objects.get(user=request.user, pk=pk)
 
@@ -29,16 +114,17 @@ def update_spent_view(request, pk):
         if form.is_valid():
             form.save()
 
-            messages.add_message(
-                request, messages.SUCCESS, 'Gasto ALTERADO com sucesso.'
-            )
-            return redirect('core:home')
+            messages.success(request, 'Gasto ALTERADO com sucesso.')
+            return JsonResponse({'url': reverse_lazy('core:home')}, status=200)
+
+        return JsonResponse({'errors': form.errors}, status=400)
 
     return JsonResponse(
         {'spent': spent.spent, 'date': spent.date, 'value': spent.value}
     )
 
 
+@login_required
 def create_spent_view(request):
     if request.method == 'POST':
         form = forms.SpentForm(
@@ -47,7 +133,7 @@ def create_spent_view(request):
         if form.is_valid():
             form.save()
 
-            messages.add_message(
-                request, messages.SUCCESS, 'Gasto ADICIONADO com sucesso.'
-            )
-            return redirect('core:home')
+            messages.success(request, 'Gasto ADICIONADO com sucesso.')
+            return JsonResponse({'url': reverse_lazy('core:home')}, status=200)
+
+        return JsonResponse({'errors': form.errors}, status=400)
