@@ -1,0 +1,25 @@
+<div class="modal fade" id="spent">
+  <div class="modal-dialog" role="document">
+      <form method="POST" class="modal-content" id="modal-spent">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-label"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% include 'components/field.html' with field=form.spent %}
+        <div id="error-spent"></div>
+        {% include 'components/field.html' with field=form.date %}
+        <div id="error-date"></div>
+        {% include 'components/field.html' with field=form.value %}
+        <div id="error-value"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btn-create">Enviar</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -25,6 +25,9 @@ python manage.py runserver
 *__Funcionalidades__*
 
 - [x] CRUD dos gastos
-- [ ] Sitema de login
+- [x] Sitema de login
 - [x] Listagem dos gastos
-- [ ] Cálculo dos gastos
+- [x] Cálculo dos gastos
+
+*__Testes__*
+![Coverage](planilha/core/tests/img/coverage.png)

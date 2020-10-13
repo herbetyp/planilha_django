@@ -59,9 +59,9 @@ def home_view(request):
     percent = income_gross * save_percent / 100
     icome_subtracted_spents = (income_gross - total_spents) - percent
 
-    alive_save_percent = False
+    above_save_percent = False
     if total_spents > income_gross - percent:
-        alive_save_percent = True
+        above_save_percent = True
 
     return render(
         request,
@@ -74,7 +74,7 @@ def home_view(request):
             'save_percent': save_percent,
             'percent': percent,
             'icome_subtracted_spents': icome_subtracted_spents,
-            'alive_save_percent': alive_save_percent,
+            'alive_save_percent': above_save_percent,
         },
     )
 
@@ -88,12 +88,12 @@ def income_view(request):
 
         if income.exists():
             income.update(income=income_value, save_percent=save_percent)
-            messages.success(request, 'Renda bruta mensal ATUALIZADA com sucesso.')
+            messages.success(request, 'Dados ATUALIZADOS com sucesso.')
         else:
             income.create(
                 user=request.user, income=income_value, save_percent=save_percent
             )
-            messages.success(request, 'Renda bruta mensal SALVA com sucesso.')
+            messages.success(request, 'Dados SALVO com sucesso.')
         return redirect('core:home')
 
 

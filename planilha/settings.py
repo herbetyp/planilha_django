@@ -16,6 +16,7 @@ from decouple import config
 from decouple import Csv
 from dj_database_url import parse as dburl
 from django.contrib.messages import constants
+from django.urls import reverse_lazy
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -88,6 +89,8 @@ WSGI_APPLICATION = 'planilha.wsgi.application'
 default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
 
 DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl)}
+
+LOGIN_URL = reverse_lazy('core:login')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
