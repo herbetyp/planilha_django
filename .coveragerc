@@ -16,3 +16,5 @@ omit =
     */admin.py
     */migrations/*
     */tests/*
+    */conftest.py
+    */django_assertions.py
