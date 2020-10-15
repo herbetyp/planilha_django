@@ -2,7 +2,6 @@ from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -44,39 +43,8 @@ def logout_view(request):
 @login_required
 def home_view(request):
     form = forms.SpentForm()
-    spents = models.Spent.objects.filter(user=request.user).values(
-        'pk', 'spent', 'date', 'value'
-    )
-    income = (
-        models.Income.objects.filter(user=request.user)
-        .values('income', 'save_percent')
-        .last()
-    )
-    total_spents = spents.aggregate(Sum('value')).get('value__sum')
-    income_gross = income.get('income')
-    save_percent = income.get('save_percent')
 
-    percent = income_gross * save_percent / 100
-    icome_subtracted_spents = (income_gross - total_spents) - percent
-
-    above_save_percent = False
-    if total_spents > income_gross - percent:
-        above_save_percent = True
-
-    return render(
-        request,
-        'core/home.html',
-        {
-            'spents': spents,
-            'form': form,
-            'income_gross': income_gross,
-            'total_spents': total_spents,
-            'save_percent': save_percent,
-            'percent': percent,
-            'icome_subtracted_spents': icome_subtracted_spents,
-            'alive_save_percent': above_save_percent,
-        },
-    )
+    return render(request, 'core/home.html', {'form': form})
 
 
 @login_required
