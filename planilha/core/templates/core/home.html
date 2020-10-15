@@ -12,7 +12,8 @@
       </div>
       <div class="mt-1 mb-3 text-center">
         <a class="btn btn-info btn-sm create" data-toggle="modal"
-        data-target="#spent" data-url={% url 'core:create' %}><i class="fas fa-plus-square"></i> Adicionar</a>
+        data-target="#spent" data-url={% url 'core:create' %}>
+        <i class="fas fa-plus-square"></i> Adicionar</a>
       </div>
   </div>
   <div class="mt-5">
@@ -22,28 +23,24 @@
         <div class="input-group-prepend">
           <span class="input-group-text">R$</span>
         </div>
-        <input type="number" class="form-control" name="income" value="{{ income_gross|default:"00.00" }}" required>
+        <input type="number" class="form-control" name="income" value="{{ income.income|default:"0,00" }}" required>
       </div>
       <small class="input-text text-muted">Informe sua renda bruta mensal.</small>
       <div class="input-group mt-2">
         <div class="input-group-prepend">
           <span class="input-group-text">%</span>
         </div>
-        <input type="number" class="form-control" name="save_money" value="{{ save_percent|default:"0" }}" required>
+        <input type="number" class="form-control" name="save_money" value="{{ income.save_percent|default:"0" }}" required>
         <button class="btn btn-primary btn-sm ml-1">{% if save_percent %}Atualizar{% else %}Salvar{% endif %}</button>
       </div>
       <small class="input-text text-muted">Informe quantos % deseja economizar.</small>
     </form>
-    <div class="text-right">
-      <p>Total De Gastos = R$ <strong>{{ total_spents }}</strong></p>
-      <p>Renda - Gastos = R$ <strong>{{ icome_subtracted_spents }}</strong></p>
-      {% if alive_save_percent %}
-        <p class="text-uppercase text-danger">Economiza  - R$ {{ percent }}</p>
-      {% else %}
-        <p class="text-uppercase text-success">Economiza - R$ {{ percent }}</p>
-      {% endif %}
+    <div class="text-right mt-0">
+      <p>Saldo = R$ <strong>{{ balance|default:income.income }}</strong></p>
+      <p>Gastos = R$ <strong>{{ total_spents|default:"0,00" }}</strong></p>
+      <p class="text-success">
+      Poupança = R$ {{ percent|default:"0,00" }}</p>
     </div>
-  </div>
   <div class="card mt-5">
     <div class="card-body table-responsive p-0">
       <table class="table table-hover">

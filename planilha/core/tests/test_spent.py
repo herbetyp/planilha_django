@@ -12,9 +12,9 @@ def spent(db, user):
 
 
 @pytest.fixture
-def resp_post_create(user_logged, spent):
+def resp_post_create(user_logged, user):
     data = {'spent': 'teste_create', 'date': '2020-10-04', 'value': '200'}
-    return user_logged.post(reverse("core:create"), data=data)
+    return user_logged.post(reverse("core:create"), data=data, user=user)
 
 
 @pytest.fixture
