@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}<title>Home</title>{% endblock title %}
+{% block title %}<title>Planilha - Home</title>{% endblock title %}
 
 {% block content %}
   {% include 'components/messages.html' %}
@@ -16,8 +16,10 @@
         <i class="fas fa-plus-square"></i> Adicionar</a>
       </div>
   </div>
-  <div class="mt-5">
-    <form action="{% url 'core:income' %}" method="POST" class="float-left">
+  <div class="row">
+
+  <div class="mt-5 col-md-4">
+    <form action="{% url 'core:income' %}" method="POST">
       {% csrf_token %}
       <div class="input-group">
         <div class="input-group-prepend">
@@ -35,12 +37,14 @@
       </div>
       <small class="input-text text-muted">Informe quantos % deseja economizar.</small>
     </form>
-    <div class="text-right mt-0">
-      <p>Saldo = R$ <strong>{{ balance|default:income.income }}</strong></p>
-      <p>Gastos = R$ <strong>{{ total_spents|default:"0,00" }}</strong></p>
-      <p class="text-success">
-      Poupança = R$ {{ percent|default:"0,00" }}</p>
-    </div>
+  </div>
+  <div class="mt-5 col-md-8 infos">
+    <p>Saldo = R$ <strong>{{ balance|default:income.income }}</strong></p>
+    <p>Gastos = R$ <strong>{{ total_spents|default:"0,00" }}</strong></p>
+    <p class="text-success">
+    Poupança = R$ {{ percent|default:"0,00" }}</p>
+  </div>
+  </div>
   <div class="card mt-5">
     <div class="card-body table-responsive p-0">
       <table class="table table-hover">

@@ -30,3 +30,4 @@ python manage.py runserver
 - [x] Listagem dos gastos
 - [x] Cálculo dos gastos
 - [ ] Filtragem por mês
+- [ ] Sistema de cadastro

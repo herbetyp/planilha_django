@@ -31,7 +31,7 @@ def resp_home_not_logged(client, spent, income):
 # Deslogado
 def test_status_code_not_logged(resp_home_not_logged):
     assert resp_home_not_logged.status_code == 302
-    assert reverse('core:login')
+    assert reverse('accounts:login')
 
 
 # Logado
@@ -41,7 +41,7 @@ def test_status_code_logged(resp_home_logged):
 
 def test_title_logged(resp_home_logged):
     assert resp_home_logged.status_code == 200
-    assert_contains(resp_home_logged, '<title>Home</title>')
+    assert_contains(resp_home_logged, '<title>Planilha - Home</title>')
 
 
 def test_home_link_navbar_logged(resp_home_logged):
@@ -51,8 +51,10 @@ def test_home_link_navbar_logged(resp_home_logged):
 
 def test_exit_link_navbar_logged(resp_home_logged):
     assert resp_home_logged.status_code == 200
-    assert_not_contains(resp_home_logged, f'href="{reverse("core:logout")}">Sair</a>')
+    assert_not_contains(
+        resp_home_logged, f'href="{reverse("accounts:logout")}">Sair</a> '
+    )
 
 
 def test_user_logged(resp_home_logged, user):
-    assert_contains(resp_home_logged, f'<strong>{user.username}</strong>')
+    assert_contains(resp_home_logged, user.username)
