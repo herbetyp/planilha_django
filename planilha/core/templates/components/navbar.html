@@ -5,14 +5,27 @@
 		<div class="row">
 			<div class="col">
 				<a class="navbar-brand" href="{% url 'core:home' %}">Home
-				<i class="fad fa-home text-white"></i> | <strong>{{ user }}</strong></a>
+				<i class="fad fa-home text-white"></i></a>
 			</div>
 		</div>
-		<a class="navbar-brand float-right" href="{% url 'core:logout' %}">Sair </a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
 			aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
+		<div class="collapse navbar-collapse mr-3" id="navbarResponsive">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle font-weight-bold" href="#" id="navbarDropdown"
+						role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">{{ user }}</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						{% comment %} <a class="dropdown-item" href="{% url 'change-password' %}">Alterar senha</a> {% endcomment %}
+						<a class="dropdown-item" href="{% url 'accounts:logout' %}">Sair</a>
+						{% comment %} <div class="dropdown-divider"></div> {% endcomment %}
+					</div>
+				</li>
+			</ul>
+		</div>
 		{% else %}
 			<h3 class="text-white mx-auto">
 			Planilha De Gastos <i class="fad fa-money-check-edit-alt"></i></h3>

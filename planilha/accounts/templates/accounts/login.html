@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}<title>Login</title>{% endblock title %}
+{% block title %}<title>Planilha - Login</title>{% endblock title %}
 
 {% block content %}
   <div class="col-md-4 offset-md-4 mt-5">
@@ -9,7 +9,7 @@
       <div class="card-header">
         <h3 class="mt-1 mb-1 text-center">Login <i class="fad fa-sign-in"></i></h3>
       </div>
-      <form method="POST" action="{% url 'core:login' %}">
+      <form method="POST" action="{% url 'accounts:login' %}">
         {% csrf_token %}
           <div class="card-body">
             {% include 'components/field.html' with field=form.username %}
