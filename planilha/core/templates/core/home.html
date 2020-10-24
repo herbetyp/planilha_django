@@ -17,33 +17,21 @@
       </div>
   </div>
   <div class="row">
-
-  <div class="mt-5 col-md-4">
-    <form action="{% url 'core:income' %}" method="POST">
-      {% csrf_token %}
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text">R$</span>
-        </div>
-        <input type="number" class="form-control" name="income" value="{{ income.income|default:"0,00" }}" required>
-      </div>
-      <small class="input-text text-muted">Informe sua renda bruta mensal.</small>
-      <div class="input-group mt-2">
-        <div class="input-group-prepend">
-          <span class="input-group-text">%</span>
-        </div>
-        <input type="number" class="form-control" name="save_money" value="{{ income.save_percent|default:"0" }}" required>
-        <button class="btn btn-primary btn-sm ml-1">{% if save_percent %}Atualizar{% else %}Salvar{% endif %}</button>
-      </div>
-      <small class="input-text text-muted">Informe quantos % deseja economizar.</small>
-    </form>
-  </div>
-  <div class="mt-5 col-md-8 infos">
-    <p>Saldo = R$ <strong>{{ balance|default:income.income }}</strong></p>
-    <p>Gastos = R$ <strong>{{ total_spents|default:"0,00" }}</strong></p>
-    <p class="text-success">
-    Poupança = R$ {{ percent|default:"0,00" }}</p>
-  </div>
+    <div class="mt-5 col-md-4">
+      <form action="{% url 'core:income' %}" method="POST">
+        {% csrf_token %}
+        {% include 'components/field.html' with field=form_income.income %}
+        <div id="error-income"></div>
+        {% include 'components/field.html' with field=form_income.save_percent %}
+        <div id="error-save-percent"></div>
+        <button id="btn-income" class="btn btn-primary btn-sm">Salvar</button>
+      </form>
+    </div>
+    <div class="mt-5 col-md-8 infos">
+      <p>Saldo = R$ <strong>{{ balance|default:income.income }}</strong></p>
+      <p>Gastos = R$ <strong>{{ total_spents|default:"0,00" }}</strong></p>
+      <p class="text-success">Poupança = R$ {{ percent|default:"0,00" }}</p>
+    </div>
   </div>
   <div class="card mt-5">
     <div class="card-body table-responsive p-0">
@@ -96,14 +84,51 @@
           $('#id_spent').val(data.spent)
           $('#id_value').val(data.value)
           $('#id_date').val(data.date)
-        })
+        });
       });
       $('.create').on('click', function() {
         url = $(this).attr("data-url");
         $('#modal-spent').prop('action', url);
         $('#modal-label').html('Adicionar Gasto')
       });
-      function validateForm(url, form) {
+
+    $.get('/renda/', function(data) {
+        $('#id_income').val(data.income)
+        $('#id_save_percent').val(data.save_percent)
+      });
+
+      function incomeForm(url, form) {
+        $.ajax({
+          url: url,
+          method: 'POST',
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: form.serialize(),
+          dataType: 'json',
+          success: function() {
+            location.reload();
+          },
+          error: function(data) {
+            errors = data.responseJSON.errors
+            if (errors.income) {
+              $('input[name="income"]').addClass('is-invalid');
+              $('#error-income').addClass('has-error text-danger').html(errors.income);
+            }
+            if (errors.save_percent) {
+              $('input[name="save_percent"]').addClass('is-invalid');
+              $('#error-save-percent').addClass('has-error text-danger').html(errors.save_percent);
+            }
+          }
+        });
+      }
+
+      $('#btn-income').on('click', function(event) {
+        event.preventDefault();
+        form = $(this).closest('form');
+        url = $(this).closest('form').attr('action');
+        incomeValue(url, form);
+      });
+
+      function spentForm(url, form) {
         $.ajax({
           url: url,
           method: 'POST',
@@ -136,13 +161,13 @@
         event.preventDefault();
         form = $(this).closest('form');
         url = $(this).closest('form').attr('action');
-        validateForm(url, form)
+        spentForm(url, form)
       });
       $('#btn-update').on('click', function(event) {
         event.preventDefault();
         form = $(this).closest('form');
         url = $(this).closest('form').attr('action');
-        validateForm(url, form)
+        spentForm(url, form)
       });
     });
   </script>

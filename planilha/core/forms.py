@@ -11,3 +11,18 @@ class SpentForm(forms.ModelForm):
     class Meta:
         model = models.Spent
         fields = ['spent', 'date', 'value']
+
+
+class IncomeForm(forms.ModelForm):
+    income = forms.CharField(
+        label='Renda',
+        widget=forms.TextInput(attrs={'type': 'tel', 'class': 'form-control'}),
+    )
+    save_percent = forms.CharField(
+        label='Guardar em %',
+        widget=forms.TextInput(attrs={'type': 'tel', 'class': 'form-control'}),
+    )
+
+    class Meta:
+        model = models.Income
+        fields = ['income', 'save_percent']

@@ -12,27 +12,26 @@ from planilha.core import models
 @login_required
 def home_view(request):
     form = forms.SpentForm()
+    form_income = forms.IncomeForm()
 
-    return render(request, 'core/home.html', {'form': form})
+    return render(request, 'core/home.html', {'form': form, 'form_income': form_income})
 
 
 @login_required
 def income_view(request):
+    income, _ = models.Income.objects.get_or_create(user=request.user)
     if request.method == 'POST':
-        income_value = request.POST.get('income')
-        save_percent = request.POST.get('save_money')
-        income = models.Income.objects.filter(user=request.user)
+        form = forms.IncomeForm(data=request.POST, instance=income)
 
-        if income.exists():
-            income.update(income=income_value, save_percent=save_percent)
-            messages.success(request, 'Dados ATUALIZADOS com sucesso.')
-        else:
-            income.create(
-                user=request.user, income=income_value, save_percent=save_percent
-            )
+        if form.is_valid():
+            form.save()
+
             messages.success(request, 'Dados SALVO com sucesso.')
+            return JsonResponse({'url': reverse_lazy('core:home')}, status=200)
 
-        return redirect('core:home')
+        return JsonResponse({'errors': form.errors}, status=400)
+
+    return JsonResponse({'income': income.income, 'save_percent': income.save_percent})
 
 
 @login_required
