@@ -7,5 +7,8 @@ app_name = 'accounts'
 
 urlpatterns = [
     path('', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    path('sair/', views.logout_view, name='logout'),
+    path(
+        'mudar-senha/', views.CustomPasswordChangeView.as_view(), name='change-password'
+    ),
 ]

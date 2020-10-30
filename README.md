@@ -29,5 +29,6 @@ python manage.py runserver
 - [x] Sitema de login
 - [x] Listagem dos gastos
 - [x] Cálculo dos gastos
+- [x] Troca de senha
 - [ ] Filtragem por mês
 - [ ] Sistema de cadastro
