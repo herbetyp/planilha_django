@@ -19,9 +19,9 @@
 						role="button" data-toggle="dropdown"
 						aria-haspopup="true" aria-expanded="false">{{ user }}</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						{% comment %} <a class="dropdown-item" href="{% url 'change-password' %}">Alterar senha</a> {% endcomment %}
+						<a class="dropdown-item" href="{% url 'accounts:change-password' %}">Alterar senha</a>
+						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="{% url 'accounts:logout' %}">Sair</a>
-						{% comment %} <div class="dropdown-divider"></div> {% endcomment %}
 					</div>
 				</li>
 			</ul>
