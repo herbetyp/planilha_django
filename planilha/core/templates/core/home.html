@@ -90,8 +90,10 @@
         });
       });
       $('.create').on('click', function() {
+        modal_spent = $('#modal-spent')
         url = $(this).attr("data-url");
-        $('#modal-spent').prop('action', url);
+        modal_spent.prop('action', url);
+        modal_spent.find('input[name="spent"], input[name="date"], input[name="value"]').val('')
         $('#modal-label').html('Adicionar Gasto')
       });
 
@@ -140,7 +142,6 @@
           dataType: 'json',
           success: function() {
             location.reload();
-            form.trigger('reset');
           },
           error: function(data) {
             errors = data.responseJSON.errors
