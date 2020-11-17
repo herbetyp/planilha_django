@@ -14,7 +14,11 @@
           <div class="card-body">
             {% include 'components/field.html' with field=form.username %}
             {% include 'components/field.html' with field=form.password %}
-            <button type="submit" class="btn btn-info btn-block">Entrar</button>
+            <button type="submit" class="btn btn-info btn-block mt-2 mb-5">Entrar</button>
+            <hr>
+            <p class="text-center text-uppercase">Cadastre-se abaixo</p>
+            <a href="{% url 'accounts:register' %}" class="btn btn-secondary btn-block mt-2">Cadastre-se</a>
+            {% comment %} <a href="#" class="btn btn-success btn-block mt-5">Reuperar Senha</a> {% endcomment %}
           </div>
       </form>
     </div>

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+      <div class="col-md-4 offset-md-4 mt-5">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="mt-1 mb-1 text-center">Cadastro <i class="far fa-cabinet-filing"></i></h3>
+          </div>
+          <form method="POST" action="{% url 'accounts:register' %}">
+            {% csrf_token %}
+              <div class="card-body">
+              {% include 'components/field.html' with field=form.username %}
+              {% comment %} <div id="error-spent"></div> {% endcomment %}
+              {% include 'components/field.html' with field=form.email %}
+              {% comment %} <div id="error-date"></div> {% endcomment %}
+              {% include 'components/field.html' with field=form.password %}
+              {% comment %} <div id="error-value"></div> {% endcomment %}
+              {% include 'components/field.html' with field=form.password2 %}
+              {% comment %} <div id="error-value"></div> {% endcomment %}
+              <button type="submit" class="btn btn-info btn-block mt-2">Salvar</button>
+              <a href="{% url 'accounts:login' %}" class="btn btn-secondary btn-block mt-2">Voltar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+{% endblock content %}
+
