@@ -30,6 +30,22 @@ class CustomPasswordChangeView(auth_views.PasswordChangeView):
         return super().form_valid(form)
 
 
+def register_view(request):
+    form = forms.RegisterForm()
+    if request.method == 'POST':
+        form = forms.RegisterForm(data=request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request, 'Cadastro realizado com sucesso. Faça o login abaixo.'
+            )
+            return redirect('accounts:login')
+
+    return render(request, 'accounts/register.html', {'form': form})
+
+
 def login_view(request):
     form = AuthenticationForm()
 

@@ -27,12 +27,12 @@ class Income(models.Model):
         'auth.User', on_delete=models.CASCADE, related_name='income'
     )
     income = models.DecimalField(
-        verbose_name='Renda Bruta Mensal', max_digits=15, decimal_places=2
+        verbose_name='Renda Bruta Mensal', max_digits=15, decimal_places=2, default=0,
     )
     save_percent = models.IntegerField(
         verbose_name='Pocentagem Ah Economizar',
-        default=1,
-        validators=[MaxValueValidator(100), MinValueValidator(1)],
+        default=0,
+        validators=[MaxValueValidator(100), MinValueValidator(0)],
     )
 
     class Meta:

@@ -1,4 +1,7 @@
 from django import forms
+from django.contrib.auth.models import User
+
+from planilha.core.models import Income
 
 
 class ChangePasswordForm(forms.Form):
@@ -35,3 +38,47 @@ class ChangePasswordForm(forms.Form):
         self.user.save()
 
         return self.user
+
+
+class RegisterForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+    password = forms.CharField(
+        label='Senha',
+        help_text='senha precisa ter 6 ou mais carácteres.',
+        widget=forms.PasswordInput(),
+    )
+    password2 = forms.CharField(label='Repetir Senha', widget=forms.PasswordInput())
+
+    class Meta:
+        fields = '__all__'
+
+    def clean(self):
+        username = self.cleaned_data.get('username')
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password2')
+
+        if User.objects.filter(username=username).exists():
+            return self.add_error('username', 'usuário já existe.')
+
+        if User.objects.filter(email=email).exists():
+            return self.add_error('email', 'email já existe.')
+
+        if len(password) < 6 or len(password2) < 6:
+            return self.add_error('password', 'senha precisa ter 6 ou mais carácteres.')
+
+        if password != password2:
+            return self.add_error('password2', 'senhas não conferem')
+
+    def save(self):
+        username = self.cleaned_data.get('username')
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+
+        user = User.objects.create_user(
+            username=username, email=email, password=password
+        )
+        user.save()
+
+        Income.objects.create(user=user)
