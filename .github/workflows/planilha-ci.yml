@@ -27,7 +27,7 @@ jobs:
         cp contrib/env-sample .env
 
     - name: Install Poetry
-      uses: dschep/install-poetry-action@v1.2.6
+      uses: dschep/install-poetry-action@v1.3
 
     - name: Cache Poetry virtualenv
       uses: actions/cache@v1
