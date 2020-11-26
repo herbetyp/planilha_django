@@ -28,12 +28,12 @@ jobs:
 
     - name: Install Poetry
       uses: dschep/install-poetry-action@v1.3
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
 
     - name: Cache Poetry virtualenv
       uses: actions/cache@v2
       id: cache
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
       with:
         path: ~/.virtualenvs
         key: poetry-${{ hashFiles('**/poetry.lock') }}
