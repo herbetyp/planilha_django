@@ -2,6 +2,9 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![codecov](https://codecov.io/gh/Pbezerra-dev/planilha_django/branch/master/graph/badge.svg)](https://codecov.io/gh/Pbezerra-dev/planilha_django)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Python 3](https://pyup.io/repos/github/Pbezerra-dev/planilha_django/python-3-shield.svg)](https://pyup.io/repos/github/Pbezerra-dev/planilha_django/)
+[![Updates](https://pyup.io/repos/github/Pbezerra-dev/planilha_django/shield.svg)](https://pyup.io/repos/github/Pbezerra-dev/planilha_django/)
+
 
 >## Sistema Para Controle De Gastos
 #
