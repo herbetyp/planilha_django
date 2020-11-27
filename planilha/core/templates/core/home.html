@@ -6,101 +6,62 @@
   {% include 'components/messages.html' %}
 
   <div class="card mt-5">
-    <div class="card-header bg-dark"></div>
-      <div class="card-body">
-        <h2 class="text-center">Planilha De Gastos <i class="fad fa-money-check-edit-alt"></i></h2>
-      </div>
-      <div class="mt-1 mb-3 text-center">
-        <a class="btn btn-info btn-sm create" data-toggle="modal"
-        data-target="#spent" data-url={% url 'core:create' %}>
-        <i class="fas fa-plus-square"></i> Adicionar</a>
-      </div>
-  </div>
-  <div class="row">
-    <div class="mt-5 col-md-4">
-      <form action="{% url 'core:income' %}" method="POST">
-        {% csrf_token %}
-        {% include 'components/field.html' with field=form_income.income %}
-        <div id="error-income"></div>
-        {% include 'components/field.html' with field=form_income.save_percent %}
-        <div id="error-save-percent"></div>
-        <button id="btn-income" class="btn btn-primary btn-sm btn-block">Salvar</button>
-      </form>
-    </div>
-    <div class="card card-infos w-50 ml-auto mr-3 mt-5">
-      <div class="card-header text-center font-weight-bold">Informações</div>
-      <div class="mt-3 col-md-8 infos">
-        <p>Saldo = R$ <strong>{{ balance|default:income.income }}</strong></p>
-        <p>Gastos = R$ <strong>{{ total_spents|default:"0,00" }}</strong></p>
-        <p class="text-success">Poupança = R$ {{ percent|default:"0,00" }}</p>
-      </div>
+  <div class="card-header bg-dark"></div>
+    <div class="card-body">
+      <h3 class="text-center">Sistema De Gastos <i class="fad fa-money-check-edit-alt"></i></h3>
     </div>
   </div>
-  <div class="card card-table mt-5">
+  <div class="card mt-5">
+    <div class="card-header text-center"><h4>Meses</h4></div>
+    <div class="card-body text-center">
+      {% for month in months %}
+        <a href="{% url 'core:month' month=month %}"><button class="btn btn-primary mt-2 ml-2">{{ month|slice:':3' }}</button></a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card card-table mt-5 mb-3">
+  <div class="card-header text-center text-uppercase"><h5>Últimas 10 contas - atualizadas</h5></div>
     <div class="card-body table-responsive p-0">
-      <table class="table table-hover">
+      <table class="table table-hover text-center">
         <thead>
           <tr>
             <th>Descrição</th>
             <th>Data</th>
             <th>Valor</th>
+            <th>Criada</th>
+            <th>Atualizada</th>
           </tr>
         </thead>
         <tbody>
           {% for spent in spents %}
             <tr>
-              <td>{{ spent.spent }}</td>
-              <td>{{ spent.date|date:"d/m/Y" }}</td>
-              <td>R$ {{ spent.value }}</td>
-              <td
+              <td id="spent-table">{{ spent.spent }}</td>
+              <td id="date-table">{{ spent.date|date:"d/m/Y" }}</td>
+              <td id="value-table">R$ {{ spent.value }}</td>
+              <td id="value-table">{{ spent.created_at|date:"d/m/Y H:i:s" }}</td>
+              <td id="value-table">{{ spent.updated_at|date:"d/m/Y H:i:s" }}</td>
+              {% comment %} <td
                 class="text-right"><a class="btn btn-warning btn-sm p-1 update" data-toggle="modal"
-                data-target="#spent" data-url={% url 'core:update' pk=spent.pk %}><i class="fad fa-pencil-alt"></i> Alterar</a>
+                data-target="#spent" data-url={% url 'core:update' pk=spent.pk month=month %}><i class="fad fa-pencil-alt"></i> Alterar</a>
 
                 <a class="btn btn-danger btn-sm p-1 text-white delete" data-toggle="modal"
-                data-target="#delete-spent" data-url={% url 'core:delete' pk=spent.pk %}><i class="fas fa-trash-alt"></i> Excluir</a>
-              </td>
+                data-target="#delete-spent" data-url={% url 'core:delete' pk=spent.pk month=month %}><i class="fas fa-trash-alt"></i> Excluir</a>
+              </td> {% endcomment %}
             </tr>
           {% empty %}
-            <td class="text-center text-danger text-uppercase" colspan="4">Não Ah Gastos Cadastrados</td>
+            <td class="text-center text-danger text-uppercase" colspan="5">Não ah contas cadastradas</td>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
-  {% include 'core/modal-delete-spent.html' %}
-  {% include 'core/modal-spent.html' with form=form %}
+  {% comment %} {% include 'core/modal-delete-spent.html' %}
+  {% include 'core/modal-spent.html' with form=form month=month %} {% endcomment %}
 {% endblock content %}
 
-{% block js %}
+{% comment %} {% block js %}
   <script>
     $(function() {
-      $('.delete').on('click', function() {
-        url = $(this).attr("data-url");
-        $('#modal-delete').prop('action', url);
-      });
-      $('.update').on('click', function() {
-        url = $(this).attr("data-url");
-        $('#modal-spent').prop('action', url);
-        $('#modal-label').html('Alterar Gasto')
-
-        $.get(url, function(data) {
-          $('#id_spent').val(data.spent)
-          $('#id_value').val(data.value)
-          $('#id_date').val(data.date)
-        });
-      });
-      $('.create').on('click', function() {
-        modal_spent = $('#modal-spent')
-        url = $(this).attr("data-url");
-        modal_spent.prop('action', url);
-        modal_spent.find('input[name="spent"], input[name="date"], input[name="value"]').val('')
-        $('#modal-label').html('Adicionar Gasto')
-      });
-
-    $.get('/renda/', function(data) {
-        $('#id_income').val(data.income)
-        $('#id_save_percent').val(data.save_percent)
-      });
 
       function incomeForm(url, form) {
         $.ajax({
@@ -161,18 +122,12 @@
           }
         });
       }
-      $('#btn-create').on('click', function(event) {
-        event.preventDefault();
-        form = $(this).closest('form');
-        url = $(this).closest('form').attr('action');
-        spentForm(url, form)
-      });
-      $('#btn-update').on('click', function(event) {
-        event.preventDefault();
-        form = $(this).closest('form');
-        url = $(this).closest('form').attr('action');
-        spentForm(url, form)
-      });
+      //$('#btn-update').on('click', function(event) {
+      //  event.preventDefault();
+      //  form = $(this).closest('form');
+      //  url = $(this).closest('form').attr('action');
+      //  spentForm(url, form)
+      //});
     });
   </script>
-{% endblock js %}
+{% endblock js %} {% endcomment %}

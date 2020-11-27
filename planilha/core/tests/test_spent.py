@@ -8,51 +8,67 @@ from planilha.django_assertions import assert_in
 
 @pytest.fixture
 def spent(db, user):
-    return baker.make(Spent, user=user)
+    return baker.make(Spent, user=user, spent='Teste')
 
 
 @pytest.fixture
 def resp_post_create(user_logged, user):
     data = {'spent': 'teste_create', 'date': '2020-10-04', 'value': '200'}
-    return user_logged.post(reverse("core:create"), data=data, user=user)
+    return user_logged.post(
+        reverse("core:create", kwargs={'month': 'Janeiro'}), data=data, user=user
+    )
 
 
 @pytest.fixture
-def resp_post_update(user_logged, resp_post_create, spent):
+def resp_post_update(user_logged, spent):
     data = {'spent': 'teste_update', 'date': '2020-10-05', 'value': '250'}
-    return user_logged.post(reverse("core:update", kwargs={'pk': spent.pk}), data=data)
+    return user_logged.post(
+        reverse("core:update", kwargs={'pk': spent.pk, 'month': 'Fevereiro'}), data=data
+    )
 
 
 @pytest.fixture
-def resp_post_error_fields_white(user_logged, resp_post_create, spent):
+def resp_post_error_fields_white(user_logged, spent):
     data = {'spent': '', 'date': '', 'value': ''}
-    return user_logged.post(reverse("core:update", kwargs={'pk': spent.pk}), data=data)
+    return user_logged.post(
+        reverse("core:update", kwargs={'pk': spent.pk, 'month': 'Abril'}), data=data
+    )
 
 
 @pytest.fixture
-def resp_post_error_date_invalid(user_logged, resp_post_create, spent):
+def resp_post_error_date_invalid(user_logged, spent):
     data = {'spent': 'test', 'date': '01-05', 'value': '10'}
-    return user_logged.post(reverse("core:update", kwargs={'pk': spent.pk}), data=data)
+    return user_logged.post(
+        reverse("core:update", kwargs={'pk': spent.pk, 'month': 'Maio'}), data=data
+    )
 
 
 @pytest.fixture
 def resp_post_delete(user_logged, spent):
-    return user_logged.post(reverse("core:delete", kwargs={'pk': spent.pk}))
+    return user_logged.post(
+        reverse("core:delete", kwargs={'pk': spent.pk, 'month': 'Junho'})
+    )
 
 
 @pytest.fixture
 def resp_get_update(user_logged, resp_post_update, spent):
-    return user_logged.get(reverse("core:update", kwargs={'pk': spent.pk}))
+    return user_logged.get(
+        reverse("core:update", kwargs={'pk': spent.pk, 'month': 'Marco'})
+    )
 
 
 def test_create_spent(resp_post_create):
     assert resp_post_create.status_code == 200
-    assert resp_post_create.json().get('url') == reverse("core:home")
+    assert resp_post_create.json().get('url') == reverse(
+        "core:month", kwargs={'month': 'Janeiro'}
+    )
 
 
 def test_update_spent_post(resp_post_update):
     assert resp_post_update.status_code == 200
-    assert resp_post_update.json().get('url') == reverse("core:home")
+    assert resp_post_update.json().get('url') == reverse(
+        "core:month", kwargs={'month': 'Fevereiro'}
+    )
 
 
 def test_update_spent_get(resp_get_update):
@@ -75,5 +91,7 @@ def test_update_spent_error_date_invalid(resp_post_error_date_invalid):
 
 
 def test_delete_spent(resp_post_delete):
-    assert resp_post_delete.status_code == 302
-    assert resp_post_delete.url == reverse("core:home")
+    assert resp_post_delete.status_code == 200
+    assert resp_post_delete.json().get('url') == reverse(
+        "core:month", kwargs={'month': 'Junho'}
+    )

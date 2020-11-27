@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}<title>Contas de {{ month_name }} </title>{% endblock title %}
+
+{% block content %}
+  {% include 'components/messages.html' %}
+
+  <div class="mt-3">
+    <form action="{% url 'core:month' month=month_name %}" method="GET">
+      {% include 'components/field.html' with field=form_income.year %}
+      <button class="btn btn-success btn-sm">Filtrar</button>
+      <a href="{% url 'core:home' %}"><button type="button" class="btn btn-secondary btn-sm">voltar</button></a>
+    </form>
+  </div>
+  <div class="mt-5">
+    <form action="{% url 'core:income' month=month_name year=year %}" method="POST">
+      {% csrf_token %}
+      {% include 'components/field.html' with field=form_income.income month=month_name %}
+      <div id="error-income"></div>
+      {% include 'components/field.html' with field=form_income.save_percent %}
+      <div id="error-save-percent"></div>
+      <button id="btn-income" class="btn btn-primary btn-sm">Salvar</button>
+    </form>
+  </div>
+  <div class="card card-infos">
+    <div class="card-header text-center font-weight-bold">Informações de {{ month_name }} de {{ year }}</div>
+    <div class="mt-2 text-center infos">
+      <p>Saldo final = R$ <strong>{% if income.income %}{{ balance|default:income.income }}{% else %}0,00{% endif %}</strong></p>
+      <p class="text-success">Poupança = R$ {{ percent|default:"0,00" }}</p>
+      <p class="text-danger">Total das contas = R$ <strong>{{ total_spents|default:"0,00" }}</strong></p>
+    </div>
+  </div>
+  <div class="card card-table mt-5 mb-3">
+  <div class="card-header text-center text-uppercase"><h5>Contas de {{ month_name }} de {{ year }}</h5>
+  <a class="btn btn-info btn-sm create" data-toggle="modal" data-target="#spent"
+  data-url={% url 'core:create' month=month_name %}><i class="fas fa-plus-square"></i> Adicionar</a>
+  </div>
+    <div class="card-body table-responsive p-0">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Data</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for spent in spents %}
+            <tr>
+              <td>{{ spent.spent }}</td>
+              <td>{{ spent.date|date:"d/m/Y" }}</td>
+              <td>R$ {{ spent.value }}</td>
+              <td class="text-right">
+                <a class="btn btn-warning btn-sm p-1 update" data-toggle="modal"
+                data-target="#spent" data-url={% url 'core:update' pk=spent.pk month=month_name %}><i class="fad fa-pencil-alt"></i> Alterar</a>
+
+                <a class="btn btn-danger btn-sm p-1 text-white delete" data-toggle="modal"
+                data-target="#delete-spent" data-url={% url 'core:delete' pk=spent.pk month=month_name %}><i class="fas fa-trash-alt"></i> Excluir</a>
+              </td>
+            </tr>
+          {% empty %}
+            <td class="text-center text-danger text-uppercase" colspan="4">Não Ah Contas Cadastradas</td>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% include 'core/modal-delete-spent.html' %}
+{% include 'core/modal-spent.html' with form=form %}
+{% endblock content %}
+
+{% block js %}
+  <script>
+    $(function() {
+        $('.delete').on('click', function() {
+        let url = $(this).attr("data-url");
+        $('#modal-delete').prop('action', url);
+      });
+      $('.update').on('click', function() {
+        let url = $(this).attr("data-url");
+        $('#modal-spent').prop('action', url);
+        $('#modal-label').html('Alterar Conta de {{ month_name }}')
+
+        $.get(url, function(data) {
+          $('#id_spent').val(data.spent)
+          $('#id_value').val(data.value)
+          $('#id_date').val(data.date)
+        });
+      });
+      $('.create').on('click', function() {
+        let modal_spent = $('#modal-spent')
+        let url = $(this).attr("data-url");
+        modal_spent.prop('action', url);
+        modal_spent.find('input[name="spent"], input[name="date"], input[name="value"]').val('')
+        $('#modal-label').html('Adicionar Conta de {{ month_name }}')
+      });
+
+      $.get('/renda/{{ month_name }}/{{ year }}', function(data) {
+          $('#id_income').val(data.income)
+          $('#id_save_percent').val(data.save_percent)
+        });
+
+      function spentForm(url, form) {
+        $.ajax({
+          url: url,
+          method: 'POST',
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: form.serialize(),
+          dataType: 'json',
+          success: function() {
+            location.reload();
+          },
+          error: function(data) {
+            errors = data.responseJSON.errors
+
+            if (errors.spent) {
+              $('input[name="spent"]').addClass('is-invalid');
+              $('#error-spent').addClass('has-error text-danger').html(errors.spent);
+            }
+            if (errors.date) {
+              $('input[name="date"]').addClass('is-invalid');
+              $('#error-date').addClass('has-error text-danger').html(errors.date);
+            }
+            if (errors.value) {
+              $('input[name="value"]').addClass('is-invalid');
+              $('#error-value').addClass('has-error text-danger').html(errors.value);
+            } else {
+              $('#error-value').addClass('has-error text-danger').html(errors.__all__);
+            }
+          }
+        });
+      }
+
+      function incomeForm(url, form) {
+        $.ajax({
+          url: url,
+          method: 'POST',
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: form.serialize(),
+          dataType: 'json',
+          success: function() {
+            location.reload();
+          },
+          error: function(data) {
+            errors = data.responseJSON.errors
+            if (errors.income) {
+              $('input[name="income"]').addClass('is-invalid');
+              $('#error-income').addClass('has-error text-danger').html(errors.income);
+            }
+            if (errors.save_percent) {
+              $('input[name="save_percent"]').addClass('is-invalid');
+              $('#error-save-percent').addClass('has-error text-danger').html(errors.save_percent);
+            }
+          }
+        });
+      }
+      function deleteForm(url, form) {
+        $.ajax({
+          url: url,
+          method: 'POST',
+          headers: {'X-CSRFToken': '{{ csrf_token }}'},
+          data: form.serialize(),
+          dataType: 'json',
+          success: function() {
+            location.reload();
+          },
+        });
+      }
+
+      $('#btn-income').on('click', function(event) {
+        event.preventDefault();
+        form = $(this).closest('form');
+        url = $(this).closest('form').attr('action');
+        incomeForm(url, form);
+      });
+
+      $('#btn-create').on('click', function(event) {
+        event.preventDefault();
+        form = $(this).closest('form');
+        url = $(this).closest('form').attr('action');
+        spentForm(url, form)
+      });
+      $('#btn-delete').on('click', function(event) {
+        event.preventDefault();
+        form = $(this).closest('form');
+        url = $(this).closest('form').attr('action');
+        deleteForm(url, form)
+      });
+    });
+  </script>
+{% endblock js %}

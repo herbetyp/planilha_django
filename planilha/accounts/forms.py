@@ -41,7 +41,7 @@ class ChangePasswordForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
-    username = forms.CharField()
+    username = forms.CharField(label='Usuário')
     email = forms.EmailField()
     password = forms.CharField(
         label='Senha',
