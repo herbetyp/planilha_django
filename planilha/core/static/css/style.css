@@ -4,19 +4,16 @@ body {
 
 .card-infos {
     text-align: right;
-    margin-top: 70px!important;
+    margin-top: 50px!important;
 }
 
-/*
-* MOBILE
-*/
+footer {
+    margin-top: 19.6rem!important;
+}
+
 @media only screen and (max-width: 768px) {
     .infos {
         text-align: center;
-    }
-    .card-infos {
-        width: 100%!important;
-        margin-left: 15px!important;
     }
     .update {
         margin-bottom: 5px!important;

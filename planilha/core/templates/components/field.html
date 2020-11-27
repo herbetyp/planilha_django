@@ -4,7 +4,7 @@
   {% with class=class|default:"" %}
 		{% if not field.field.widget.input_type == 'hidden' and field.label %}
 			<label for="{{ field.id_for_label }}" class="text-bold">
-				{{ field.label }}{% if field.field.required %}*{% endif %}
+				{{ field.label }}{{ month }}{% if field.field.required %}*{% endif %}
 			</label>
 		{% endif %}
 

@@ -1,9 +1,22 @@
+from datetime import date
+
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
 
 
-class Spent(models.Model):
+class AbstractBaseModel(models.Model):
+    created_at = models.DateTimeField(verbose_name='Criado', auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name='Atualizado', auto_now=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return str(self.pk)
+
+
+class Spent(AbstractBaseModel):
     user = models.ForeignKey(
         'auth.User', on_delete=models.CASCADE, related_name='spent'
     )
@@ -22,13 +35,19 @@ class Spent(models.Model):
         return self.spent
 
 
-class Income(models.Model):
-    user = models.OneToOneField(
-        'auth.User', on_delete=models.CASCADE, related_name='income'
+class Income(AbstractBaseModel):
+    user = models.ForeignKey(
+        'auth.User', on_delete=models.DO_NOTHING, related_name='income'
     )
     income = models.DecimalField(
-        verbose_name='Renda Bruta Mensal', max_digits=15, decimal_places=2, default=0,
+        verbose_name='Renda Bruta Mensal',
+        max_digits=15,
+        decimal_places=2,
+        default=0,
+        validators=[MinValueValidator(0)],
     )
+    month = models.IntegerField(verbose_name='Mês', default=date.today().month)
+    year = models.IntegerField(verbose_name='Ano', default=date.today().year)
     save_percent = models.IntegerField(
         verbose_name='Pocentagem Ah Economizar',
         default=0,
