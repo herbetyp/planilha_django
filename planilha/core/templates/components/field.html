@@ -11,7 +11,10 @@
 		{% if field.errors %}
 			{% render_field field|add_class:class|add_class:'is-invalid' class="form-control" %}
 		{% else %}
-			{% render_field field|add_class:class class="form-control" autocomplete=complete %}
+			{% render_field field|add_class:class class="form-control" placeholder=placeholder %}
+			{% if field.help_text %}
+				<p class="help-block"><small>{{ field.help_text }}</small></p>
+			{% endif %}
 		{% endif %}
 
 		{% include "components/field-error.html" with field=field %}

@@ -15,7 +15,9 @@ def spent(db, user):
 def resp_post_create(user_logged, user):
     data = {'spent': 'teste_create', 'date': '2020-10-04', 'value': '200'}
     return user_logged.post(
-        reverse("core:create", kwargs={'month': 'Janeiro'}), data=data, user=user
+        reverse("core:create", kwargs={'month': 'Janeiro', 'year': '2020'}),
+        data=data,
+        user=user,
     )
 
 
@@ -23,7 +25,10 @@ def resp_post_create(user_logged, user):
 def resp_post_update(user_logged, spent):
     data = {'spent': 'teste_update', 'date': '2020-10-05', 'value': '250'}
     return user_logged.post(
-        reverse("core:update", kwargs={'pk': spent.pk, 'month': 'Fevereiro'}), data=data
+        reverse(
+            "core:update", kwargs={'pk': spent.pk, 'month': 'Fevereiro', 'year': '2020'}
+        ),
+        data=data,
     )
 
 
@@ -31,7 +36,10 @@ def resp_post_update(user_logged, spent):
 def resp_post_error_fields_white(user_logged, spent):
     data = {'spent': '', 'date': '', 'value': ''}
     return user_logged.post(
-        reverse("core:update", kwargs={'pk': spent.pk, 'month': 'Abril'}), data=data
+        reverse(
+            "core:update", kwargs={'pk': spent.pk, 'month': 'Abril', 'year': '2020'}
+        ),
+        data=data,
     )
 
 
@@ -39,7 +47,10 @@ def resp_post_error_fields_white(user_logged, spent):
 def resp_post_error_date_invalid(user_logged, spent):
     data = {'spent': 'test', 'date': '01-05', 'value': '10'}
     return user_logged.post(
-        reverse("core:update", kwargs={'pk': spent.pk, 'month': 'Maio'}), data=data
+        reverse(
+            "core:update", kwargs={'pk': spent.pk, 'month': 'Maio', 'year': '2020'}
+        ),
+        data=data,
     )
 
 
@@ -53,7 +64,9 @@ def resp_post_delete(user_logged, spent):
 @pytest.fixture
 def resp_get_update(user_logged, resp_post_update, spent):
     return user_logged.get(
-        reverse("core:update", kwargs={'pk': spent.pk, 'month': 'Marco'})
+        reverse(
+            "core:update", kwargs={'pk': spent.pk, 'month': 'Marco', 'year': '2020'}
+        )
     )
 
 
