@@ -21,6 +21,8 @@ class Spent(AbstractBaseModel):
         'auth.User', on_delete=models.CASCADE, related_name='spent'
     )
     spent = models.CharField(verbose_name='Gasto', max_length=50, null=True, blank=True)
+    month = models.IntegerField(verbose_name='Mês', default=date.today().month)
+    year = models.IntegerField(verbose_name='Ano', default=date.today().year)
     date = models.DateField(verbose_name='Data', null=True, blank=True)
     value = models.DecimalField(
         'Valor', max_digits=15, decimal_places=2, null=True, blank=True

@@ -1,4 +1,3 @@
-import calendar
 from datetime import date
 
 from django.contrib import messages
@@ -60,11 +59,14 @@ def delete_spent_view(request, pk, month):
 
 
 @login_required
-def update_spent_view(request, pk, month):
+def update_spent_view(request, pk, month, year):
     spent = models.Spent.objects.get(user=request.user, pk=pk)
+    month_number = months.MONTHS.get(month)
 
     if request.method == 'POST':
-        form = forms.SpentForm(data=request.POST, instance=spent)
+        form = forms.SpentForm(
+            data=request.POST, instance=spent, month=month_number, year=year,
+        )
         if form.is_valid():
             form.save()
 
@@ -83,10 +85,14 @@ def update_spent_view(request, pk, month):
 
 
 @login_required
-def create_spent_view(request, month):
+def create_spent_view(request, month, year):
     if request.method == 'POST':
+        month_number = months.MONTHS.get(month)
         form = forms.SpentForm(
-            data=request.POST, instance=models.Spent(user=request.user)
+            data=request.POST,
+            instance=models.Spent(user=request.user),
+            month=month_number,
+            year=year,
         )
         if form.is_valid():
             form.save()
@@ -117,10 +123,8 @@ def month_view(request, month):
     context['form_income'] = form_income
     context['year'] = year
 
-    days = calendar.monthrange(year, month_number)
     context['spents'] = models.Spent.objects.filter(
-        user=request.user,
-        date__range=[f'{year}-{month_number}-01', f'{year}-{month_number}-{days[1]}'],
+        user=request.user, month=month_number, year=year
     ).values('pk', 'spent', 'date', 'value')
 
     income = (
