@@ -17,6 +17,9 @@ class SpentForm(forms.ModelForm):
         self.year = kwargs.pop('year', None)
         super(SpentForm, self).__init__(*args, **kwargs)
 
+        self.fields['month'].required = False
+        self.fields['year'].required = False
+
     def clean(self):
         new_spent = self.cleaned_data.get('spent')
         new_date = self.cleaned_data.get('date')
