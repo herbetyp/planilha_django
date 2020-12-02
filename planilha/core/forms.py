@@ -6,7 +6,7 @@ from planilha.core import models
 class SpentForm(forms.ModelForm):
     spent = forms.CharField(label='Conta')
     date = forms.DateField(label='Data')
-    value = forms.FloatField(label='Valor', min_value=1.0)
+    value = forms.DecimalField(label='Valor', min_value=1.0)
 
     class Meta:
         model = models.Spent
