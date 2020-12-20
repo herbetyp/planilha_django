@@ -15,14 +15,11 @@ __Como Rodar o Projeto?__
 git clone https://github.com/Pbezerra-dev/planilha_django.git
 cd planilha_django
 python contrib/env_gen.py
-poetry shell
-poetry install
+docker-compose run web python manage.py migrate
+docker-compose run web python manage.py createsuperuser
 docker-compose up -d
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
 ```
-- Depêndencias do __SO__ para rodar o projeto # __docker/docker-compose__ e __poetry__
+- Depêndencias do __SO__ para rodar o projeto [__docker__](https://www.docker.com/) e [__docker-compose__](https://docs.docker.com/compose/)
 
 #
 
@@ -35,3 +32,4 @@ python manage.py runserver
 - [x] Troca de senha
 - [x] Filtragem por mês
 - [x] Sistema de cadastro
+- [ ] Recuperação de senha

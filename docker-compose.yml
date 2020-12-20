@@ -1,12 +1,26 @@
 version: "3.6"
 
 services:
-  postgres:
-    container_name: planilha_django
+  db:
+    container_name: planilha_db
     image: postgres:11
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=planilha
+    env_file:
+      - .env
+    volumes:
+      - .pgdata:/var/lib/postgresql/data
     ports:
       - "5437:5432"
+
+  web:
+    build: .
+    container_name: planilha_app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  .pgdata:
