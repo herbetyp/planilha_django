@@ -1,35 +1,77 @@
 {% extends 'base.html' %}
 
-{% block title %}<title>Contas de {{ month_name }} </title>{% endblock title %}
+{% block title %}Contas de {{ month_name }}{% endblock title %}
 
 {% block content %}
   {% include 'components/messages.html' %}
 
-  <div class="mt-3">
-    <form action="{% url 'core:month' month=month_name %}" method="GET">
-      {% include 'components/field.html' with field=form_income.year placeholder=year %}
-      <button class="btn btn-success btn-sm">Definir</button>
-      <a href="{% url 'core:home' %}"><button type="button" class="btn btn-secondary btn-sm">voltar</button></a>
-    </form>
-  </div>
   <div class="mt-5">
-    <form action="{% url 'core:income' month=month_name year=year %}" method="POST">
-      {% csrf_token %}
-      {% include 'components/field.html' with field=form_income.income month=month_name %}
-      <div id="error-income"></div>
-      {% include 'components/field.html' with field=form_income.save_percent %}
-      <div id="error-save-percent"></div>
-      <button id="btn-income" class="btn btn-primary btn-sm">Salvar</button>
-    </form>
-  </div>
-  <div class="card card-infos">
-    <div class="card-header text-center font-weight-bold">Informações de {{ month_name }} de {{ year }}</div>
-    <div class="mt-2 text-center infos">
-      <p>Saldo final = R$ <strong>{% if income.income %}{{ balance|default:income.income }}{% else %}0,00{% endif %}</strong></p>
-      <p class="text-success">Poupança = R$ {{ percent|default:"0,00" }}</p>
-      <p class="text-danger">Total das contas = R$ <strong>{{ total_spents|default:"0,00" }}</strong></p>
+    <div class="form-row">
+      <div class="col-md-4">
+        <form action="{% url 'core:month' month=month_name %}" method="GET">
+          {% include 'components/field.html' with field=form_income.year placeholder=year %}
+          <button class="btn btn-success btn-sm">Definir</button>
+          <a href="{% url 'core:home' %}"><button type="button" class="btn btn-secondary btn-sm">voltar</button></a>
+        </form>
+      </div>
+      <div class="col-md-4">
+        <form action="{% url 'core:income' month=month_name year=year %}" method="POST">
+          {% csrf_token %}
+          {% include 'components/field.html' with field=form_income.income month=month_name %}
+          <div id="error-income"></div>
+          <button id="btn-income" class="btn btn-primary btn-sm">Salvar</button>
+      </div>
+      <div class="col-md-4">
+          {% include 'components/field.html' with field=form_income.save_percent %}
+          <div id="error-save-percent"></div>
+        </form>
+      </div>
+    <div class="card card-infos p-0 w-100">
+      <div class="card-header text-center font-weight-bold">Informações de {{ month_name }} de {{ year }}</div>
+      <div class="mt-2 text-center infos p-0">
+        <p>Saldo final = R$ <strong>{% if income.income %}{{ balance|default:income.income }}{% else %}0,00{% endif %}</strong></p>
+        <p class="text-success">Poupança = R$ {{ percent|default:"0,00" }}</p>
+        <p class="text-danger">Total das contas = R$ <strong>{{ total_spents|default:"0,00" }}</strong></p>
+      </div>
     </div>
   </div>
+  </div>
+  <div class="card card-table mt-5 mb-3">
+  <div class="card-header text-center text-uppercase"><h5>Contas Fixas</h5>
+  </div>
+    <div class="card-body table-responsive p-0">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Data da compra</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for fixed_account in fixeds_accounts %}
+            <tr>
+              <td>{{ fixed_account.spent }}</td>
+              <td>{{ fixed_account.date|date:"d/m/Y" }}</td>
+              <td>R$ {{ fixed_account.value }}</td>
+              <td class="text-right">
+                <a class="btn btn-warning btn-sm p-1 update" data-toggle="modal"
+                data-target="#spent" data-url={% url 'core:update' pk=fixed_account.pk month=month_name year=year %}><i class="fad fa-pencil-alt"></i> Alterar</a>
+
+                <a class="btn btn-danger btn-sm p-1 text-white delete" data-toggle="modal"
+                data-target="#delete-spent" data-url={% url 'core:delete' pk=fixed_account.pk month=month_name %}><i class="fas fa-trash-alt"></i> Excluir</a>
+              </td>
+            </tr>
+          {% empty %}
+            <td class="text-center text-danger text-uppercase" colspan="4">Não Ah Contas Cadastradas</td>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+
   <div class="card card-table mt-5 mb-3">
   <div class="card-header text-center text-uppercase"><h5>Contas de {{ month_name }} de {{ year }}</h5>
   <a class="btn btn-info btn-sm create" data-toggle="modal" data-target="#spent"
@@ -40,7 +82,7 @@
         <thead>
           <tr>
             <th>Descrição</th>
-            <th>Data</th>
+            <th>Data da compra</th>
             <th>Valor</th>
           </tr>
         </thead>

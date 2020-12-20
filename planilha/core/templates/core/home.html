@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}<title>Planilha - Home</title>{% endblock title %}
+{% block title %}Home{% endblock title %}
 
 {% block content %}
   {% include 'components/messages.html' %}
 
   <div class="card mt-5">
   <div class="card-header bg-dark"></div>
-    <div class="card-body">
-      <h3 class="text-center">Sistema De Gastos <i class="fad fa-money-check-edit-alt"></i></h3>
+    <div class="card-body text-center">
+      <h3>Sistema De Gastos <i class="fad fa-money-check-edit-alt"></i></h3>
     </div>
   </div>
   <div class="card mt-5">
@@ -26,7 +26,7 @@
         <thead>
           <tr>
             <th>Descrição</th>
-            <th>Data</th>
+            <th>Data da compra</th>
             <th>Valor</th>
             <th>Criada</th>
             <th>Atualizada</th>
@@ -40,13 +40,6 @@
               <td id="value-table">R$ {{ spent.value }}</td>
               <td id="value-table">{{ spent.created_at|date:"d/m/Y H:i:s" }}</td>
               <td id="value-table">{{ spent.updated_at|date:"d/m/Y H:i:s" }}</td>
-              {% comment %} <td
-                class="text-right"><a class="btn btn-warning btn-sm p-1 update" data-toggle="modal"
-                data-target="#spent" data-url={% url 'core:update' pk=spent.pk month=month %}><i class="fad fa-pencil-alt"></i> Alterar</a>
-
-                <a class="btn btn-danger btn-sm p-1 text-white delete" data-toggle="modal"
-                data-target="#delete-spent" data-url={% url 'core:delete' pk=spent.pk month=month %}><i class="fas fa-trash-alt"></i> Excluir</a>
-              </td> {% endcomment %}
             </tr>
           {% empty %}
             <td class="text-center text-danger text-uppercase" colspan="5">Não ah contas cadastradas</td>
@@ -55,79 +48,4 @@
       </table>
     </div>
   </div>
-  {% comment %} {% include 'core/modal-delete-spent.html' %}
-  {% include 'core/modal-spent.html' with form=form month=month %} {% endcomment %}
 {% endblock content %}
-
-{% comment %} {% block js %}
-  <script>
-    $(function() {
-
-      function incomeForm(url, form) {
-        $.ajax({
-          url: url,
-          method: 'POST',
-          headers: {'X-CSRFToken': '{{ csrf_token }}'},
-          data: form.serialize(),
-          dataType: 'json',
-          success: function() {
-            location.reload();
-          },
-          error: function(data) {
-            errors = data.responseJSON.errors
-            if (errors.income) {
-              $('input[name="income"]').addClass('is-invalid');
-              $('#error-income').addClass('has-error text-danger').html(errors.income);
-            }
-            if (errors.save_percent) {
-              $('input[name="save_percent"]').addClass('is-invalid');
-              $('#error-save-percent').addClass('has-error text-danger').html(errors.save_percent);
-            }
-          }
-        });
-      }
-
-      $('#btn-income').on('click', function(event) {
-        event.preventDefault();
-        form = $(this).closest('form');
-        url = $(this).closest('form').attr('action');
-        incomeForm(url, form);
-      });
-
-      function spentForm(url, form) {
-        $.ajax({
-          url: url,
-          method: 'POST',
-          headers: {'X-CSRFToken': '{{ csrf_token }}'},
-          data: form.serialize(),
-          dataType: 'json',
-          success: function() {
-            location.reload();
-          },
-          error: function(data) {
-            errors = data.responseJSON.errors
-
-            if (errors.spent) {
-              $('input[name="spent"]').addClass('is-invalid');
-              $('#error-spent').addClass('has-error text-danger').html(errors.spent);
-            }
-            if (errors.date) {
-              $('input[name="date"]').addClass('is-invalid');
-              $('#error-date').addClass('has-error text-danger').html(errors.date);
-            }
-            if (errors.value) {
-              $('input[name="value"]').addClass('is-invalid');
-              $('#error-value').addClass('has-error text-danger').html(errors.value);
-            }
-          }
-        });
-      }
-      //$('#btn-update').on('click', function(event) {
-      //  event.preventDefault();
-      //  form = $(this).closest('form');
-      //  url = $(this).closest('form').attr('action');
-      //  spentForm(url, form)
-      //});
-    });
-  </script>
-{% endblock js %} {% endcomment %}
