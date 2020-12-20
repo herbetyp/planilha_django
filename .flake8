@@ -34,5 +34,6 @@ exclude =
     pyproject.toml
     .github/*
     pytest.ini
+    Dockerfile
 max-line-length = 119
 format = pylint

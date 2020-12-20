@@ -13,7 +13,8 @@ SECRETY_KEY=%s
 DEBUG=True
 DEBUG_TOOLBAR=True
 ALLOWED_HOSTS=localhost, 127.0.0.1
-DATABASE_URL=postgres://postgres:postgres@localhost:5433/planilha
+DATABASE_URL=postgres://postgres:postgres@db:5437/planilha
+
 #DEFAULT_FROM_EMAIL=
 #EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 #EMAIL_HOST=
@@ -21,6 +22,10 @@ DATABASE_URL=postgres://postgres:postgres@localhost:5433/planilha
 #EMAIL_USE_TLS=
 #EMAIL_HOST_USER=
 #EMAIL_HOST_PASSWORD=
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=planilha
 """.strip() % get_random_string(
     50, chars
 )
