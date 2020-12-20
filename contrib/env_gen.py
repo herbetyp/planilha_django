@@ -11,8 +11,7 @@ chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
 CONFIG_STRING = """
 SECRETY_KEY=%s
 DEBUG=True
-DEBUG_TOOLBAR=True
-ALLOWED_HOSTS=localhost, 127.0.0.1
+ALLOWED_HOSTS=localhost, 127.0.0.1, 0.0.0.0
 DATABASE_URL=postgres://postgres:postgres@db:5437/planilha
 
 #DEFAULT_FROM_EMAIL=
