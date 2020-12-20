@@ -1,3 +1,5 @@
+{% load widget_tweaks %}
+
 <div class="modal fade" id="spent">
   <div class="modal-dialog" role="document">
       <form method="POST" class="modal-content" id="modal-spent">
@@ -16,10 +18,14 @@
         <div id="error-date"></div>
         {% include 'components/field.html' with field=form.value %}
         <div id="error-value"></div>
+        <div class="form-check">
+          {{ form.fixed_account|add_class:"form-check-input" }}
+          <label class="form-check-label" for="{{ form.fixed_account.id_for_label }}">{{ form.fixed_account.label }}</label>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary" id="btn-create">Enviar</button>
+        <button type="submit" class="btn btn-primary" id="btn-create">Salvar</button>
       </div>
     </form>
   </div>

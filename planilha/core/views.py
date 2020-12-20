@@ -7,20 +7,20 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
-from planilha.core import forms
-from planilha.core import models
+from planilha.core.forms import SpentForm, IncomeForm
+from planilha.core.models import Spent, Income
 from planilha.core import months
 
 
 @login_required
 def home_view(request):
     context = {}
-    context['form'] = forms.SpentForm()
-    context['form_income'] = forms.IncomeForm()
+    context['form'] = SpentForm()
+    context['form_income'] = IncomeForm()
     context['months'] = months.MONTHS
 
     context['spents'] = (
-        models.Spent.objects.filter(user=request.user)
+        Spent.objects.filter(user=request.user)
         .values('pk', 'spent', 'date', 'value', 'created_at', 'updated_at')
         .order_by('-updated_at')[:10]
     )
@@ -31,11 +31,11 @@ def home_view(request):
 @login_required
 def income_view(request, month, year=date.today().year):
     month_number = months.MONTHS.get(month)
-    income, _ = models.Income.objects.get_or_create(
+    income, _ = Income.objects.get_or_create(
         user=request.user, month=month_number, year=year
     )
     if request.method == 'POST':
-        form = forms.IncomeForm(data=request.POST, instance=income)
+        form = IncomeForm(data=request.POST, instance=income)
 
         if form.is_valid():
             form.save()
@@ -52,7 +52,7 @@ def income_view(request, month, year=date.today().year):
 
 @login_required
 def delete_spent_view(request, pk, month):
-    models.Spent.objects.get(pk=pk).delete()
+    Spent.objects.get(pk=pk).delete()
 
     messages.success(request, 'Conta DELETADA com sucesso.')
     return JsonResponse({'url': reverse_lazy('core:month', args=[month])}, status=200)
@@ -60,12 +60,21 @@ def delete_spent_view(request, pk, month):
 
 @login_required
 def update_spent_view(request, pk, month, year):
-    spent = models.Spent.objects.get(user=request.user, pk=pk)
+    spent = Spent.objects.get(user=request.user, pk=pk)
     month_number = months.MONTHS.get(month)
 
     if request.method == 'POST':
-        form = forms.SpentForm(
-            data=request.POST, instance=spent, month=month_number, year=year,
+        form = SpentForm(
+            data=request.POST,
+            instance=spent,
+            month=month_number,
+            year=year,
+        )
+        form = SpentForm(
+            data=request.POST,
+            instance=spent,
+            month=month_number,
+            year=year,
         )
         if form.is_valid():
             form.save()
@@ -79,18 +88,16 @@ def update_spent_view(request, pk, month, year):
 
         return JsonResponse({'errors': form.errors}, status=400)
 
-    return JsonResponse(
-        {'spent': spent.spent, 'date': spent.date, 'value': spent.value}
-    )
+    return JsonResponse({'spent': spent.spent, 'date': spent.date, 'value': spent.value})
 
 
 @login_required
 def create_spent_view(request, month, year):
     if request.method == 'POST':
         month_number = months.MONTHS.get(month)
-        form = forms.SpentForm(
+        form = SpentForm(
             data=request.POST,
-            instance=models.Spent(user=request.user),
+            instance=Spent(user=request.user),
             month=month_number,
             year=year,
         )
@@ -111,24 +118,25 @@ def create_spent_view(request, month, year):
 @login_required
 def month_view(request, month):
     context = {}
-    form_income = forms.IncomeForm()
+    form_income = IncomeForm()
     month_number = months.MONTHS.get(month)
     month_name = ''.join([k for k, v in months.MONTHS.items() if v == month_number])
-    year = (
-        int(request.GET.get('year')) if request.GET.get('year') else date.today().year
-    )
+    year = int(request.GET.get('year')) if request.GET.get('year') else date.today().year
 
-    context['form'] = forms.SpentForm()
+    context['form'] = SpentForm()
     context['month_name'] = month_name
     context['form_income'] = form_income
     context['year'] = year
+    context['fixeds_accounts'] = Spent.objects.filter(
+        user=request.user, fixed_account=True
+    ).values('pk', 'spent', 'date', 'value')
 
-    context['spents'] = models.Spent.objects.filter(
-        user=request.user, month=month_number, year=year
+    context['spents'] = Spent.objects.filter(
+        user=request.user, month=month_number, year=year, fixed_account=False
     ).values('pk', 'spent', 'date', 'value')
 
     income = (
-        models.Income.objects.filter(user=request.user, month=month_number, year=year)
+        Income.objects.filter(user=request.user, month=month_number, year=year)
         .values('income', 'save_percent')
         .last()
     )
@@ -138,7 +146,13 @@ def month_view(request, month):
         context['percent'] = income['income'] * income['save_percent'] / 100
         if context['spents']:
             context['total_spents'] = (
-                context['spents'].aggregate(Sum('value')).get('value__sum')
+                Spent.objects.filter(
+                    user=request.user,
+                    month=month_number,
+                    year=year,
+                )
+                .aggregate(Sum('value'))
+                .get('value__sum')
             )
             context['balance'] = (
                 income['income'] - context['total_spents'] - context['percent']

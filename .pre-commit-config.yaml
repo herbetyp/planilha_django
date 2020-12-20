@@ -1,18 +1,11 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 19.10b0
+    rev: 20.8b1
     hooks:
       - id: black
         name: Black
-        args: [-S]
+        args: ["--line-length", "89", "--force-exclude", "migrations", "-S"]
         language_version: python3.8
-
-  - repo: https://github.com/asottile/reorder_python_imports
-    rev: v2.3.0
-    hooks:
-      - id: reorder-python-imports
-        name: Format Imports
-
 
   - repo: local
     hooks:
