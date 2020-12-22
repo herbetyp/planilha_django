@@ -35,5 +35,6 @@ exclude =
     .github/*
     pytest.ini
     Dockerfile
+    *nginx*
 max-line-length = 119
 format = pylint
