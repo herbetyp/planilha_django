@@ -7,10 +7,12 @@ WORKDIR /app/
 
 COPY pyproject.toml poetry.lock /app/
 
-RUN pip install -U pip \
-    && pip install --no-cache poetry
+RUN apt-get update -y && \
+    apt-get install git -y && \
+    pip install -U pip && \
+    pip install poetry
 
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-root
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-root
 
 COPY . /app/

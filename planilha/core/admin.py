@@ -5,8 +5,7 @@ from planilha.core import models
 
 @admin.register(models.Spent)
 class SpentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'spent', 'date', 'value', 'created_at', 'updated_at')
-    list_filter = ('date',)
+    list_display = ('id', 'user', 'spent', 'value', 'created_at', 'updated_at')
     search_fields = ('spent',)
 
 

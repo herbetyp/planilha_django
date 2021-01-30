@@ -1,28 +1,31 @@
 version: "3.6"
 
 services:
-  nginx:
-    build: ./nginx
-    container_name: planilha_nginx
-    ports:
-      - 1337:80
-    volumes:
-      - static_volume:/app/staticfiles/
-      - media_volume:/app/mediafiles/
-    depends_on:
-      - web
-    restart: "on-failure"
+  # nginx:
+  #   build: ./nginx
+  #   container_name: planilha_nginx
+  #   ports:
+  #     - 1337:80
+  #   volumes:
+  #     - static_volume:/app/staticfiles/
+  #     - media_volume:/app/mediafiles/
+  #   depends_on:
+  #     - web
+  #   restart: "on-failure"
 
   web:
     build: .
     container_name: planilha_app
-    command: gunicorn planilha.wsgi:application --bind 0.0.0.0:8000
+    # command: gunicorn planilha.wsgi:application --bind 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
       - static_volume:/app/staticfiles/
       - media_volume:/app/mediafiles/
-    expose:
-      - 8000
+    # expose:
+    #   - 8000
+    ports:
+      - "8000:8000"
     depends_on:
       - db
     restart: "on-failure"

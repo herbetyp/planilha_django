@@ -21,11 +21,12 @@ class Spent(AbstractBaseModel):
     spent = models.CharField(verbose_name='Gasto', max_length=50, null=True, blank=True)
     month = models.IntegerField(verbose_name='Mês', default=date.today().month)
     year = models.IntegerField(verbose_name='Ano', default=date.today().year)
-    date = models.DateField(verbose_name='Data', null=True, blank=True)
     value = models.DecimalField(
         'Valor', max_digits=15, decimal_places=2, null=True, blank=True
     )
+    number_plots = models.IntegerField(verbose_name='Numero de parcelas', default=2)
     fixed_account = models.BooleanField(verbose_name='Conta fixa', default=False)
+    parceled_out = models.BooleanField(verbose_name='Parcelada', default=False)
 
     class Meta:
         verbose_name = 'Gasto'

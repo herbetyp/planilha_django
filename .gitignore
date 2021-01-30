@@ -112,5 +112,9 @@ gcs/media/*
 # pycharm
 .idea/
 
-
+# ignore project
+staticfiles/
+.devcontainer/*
 dump.json
+db.env
+TODO.txt

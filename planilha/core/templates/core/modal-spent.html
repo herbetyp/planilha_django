@@ -14,13 +14,18 @@
         <div id="all-error-spent"></div>
         {% include 'components/field.html' with field=form.spent %}
         <div id="error-spent"></div>
-        {% include 'components/field.html' with field=form.date %}
-        <div id="error-date"></div>
         {% include 'components/field.html' with field=form.value %}
         <div id="error-value"></div>
-        <div class="form-check">
+        <div class="form-check fixed_account">
           {{ form.fixed_account|add_class:"form-check-input" }}
           <label class="form-check-label" for="{{ form.fixed_account.id_for_label }}">{{ form.fixed_account.label }}</label>
+        </div>
+        <div class="form-check mb-2 parceled_out">
+          {{ form.parceled_out|add_class:"form-check-input" }}
+          <label class="form-check-label" for="{{ form.parceled_out.id_for_label }}">{{ form.parceled_out.label }}</label>
+        </div>
+        <div class="number_plots">
+          {% include 'components/field.html' with field=form.number_plots %}
         </div>
       </div>
       <div class="modal-footer">

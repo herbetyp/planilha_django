@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load month_tags %}
 
 {% block title %}Contas de {{ month_name }}{% endblock title %}
 
@@ -69,9 +70,6 @@
       </table>
     </div>
   </div>
-
-
-
   <div class="card card-table mt-5 mb-3">
   <div class="card-header text-center text-uppercase"><h5>Contas de {{ month_name }} de {{ year }}</h5>
   <a class="btn btn-info btn-sm create" data-toggle="modal" data-target="#spent"
@@ -82,16 +80,23 @@
         <thead>
           <tr>
             <th>Descrição</th>
-            <th>Data da compra</th>
             <th>Valor</th>
+            <th>Parcelada</th>
+            <th>Vezes</th>
           </tr>
         </thead>
         <tbody>
           {% for spent in spents %}
             <tr>
               <td>{{ spent.spent }}</td>
-              <td>{{ spent.date|date:"d/m/Y" }}</td>
               <td>R$ {{ spent.value }}</td>
+              <td>{{ spent.parceled_out|true_or_false|safe }}</td>
+              {% if spent.parceled_out %}
+               <td>{{ spent.number_plots }}</td>
+              {% else %}
+                <td></td>
+              {% endif %}
+              <td></td>
               <td class="text-right">
                 <a class="btn btn-warning btn-sm p-1 update" data-toggle="modal"
                 data-target="#spent" data-url={% url 'core:update' pk=spent.pk month=month_name year=year %}><i class="fad fa-pencil-alt"></i> Alterar</a>
@@ -126,9 +131,32 @@
         $.get(url, function(data) {
           $('#id_spent').val(data.spent)
           $('#id_value').val(data.value)
-          $('#id_date').val(data.date)
+          if (data.fixed_account) {
+            $('#id_fixed_account').prop('checked', true)
+            $('#modal-label').html('Alterar Conta fixa')
+          }
         });
       });
+
+      $('.number_plots').prop('hidden', true)
+      $('#id_parceled_out').click(function() {
+        if ($(this).is(':checked')) {
+          $('.number_plots').prop('hidden', false)
+          $('.fixed_account').prop('hidden', true)
+        } else {
+          $('.number_plots').prop('hidden', true)
+          $('.fixed_account').prop('hidden', false)
+        }
+      });
+
+      $('#id_fixed_account').click(function() {
+        if ($(this).is(':checked')) {
+          $('.parceled_out').prop('hidden', true)
+        } else {
+          $('.parceled_out').prop('hidden', false)
+        }
+      });
+
       $('.create').on('click', function() {
         let modal_spent = $('#modal-spent')
         let url = $(this).attr("data-url");

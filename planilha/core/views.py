@@ -21,7 +21,7 @@ def home_view(request):
 
     context['spents'] = (
         Spent.objects.filter(user=request.user)
-        .values('pk', 'spent', 'date', 'value', 'created_at', 'updated_at')
+        .values('pk', 'spent', 'value', 'created_at', 'updated_at')
         .order_by('-updated_at')[:10]
     )
 
@@ -70,12 +70,6 @@ def update_spent_view(request, pk, month, year):
             month=month_number,
             year=year,
         )
-        form = SpentForm(
-            data=request.POST,
-            instance=spent,
-            month=month_number,
-            year=year,
-        )
         if form.is_valid():
             form.save()
 
@@ -88,7 +82,13 @@ def update_spent_view(request, pk, month, year):
 
         return JsonResponse({'errors': form.errors}, status=400)
 
-    return JsonResponse({'spent': spent.spent, 'date': spent.date, 'value': spent.value})
+    return JsonResponse(
+        {
+            'spent': spent.spent,
+            'value': spent.value,
+            'fixed_account': spent.fixed_account,
+        }
+    )
 
 
 @login_required
@@ -129,11 +129,13 @@ def month_view(request, month):
     context['year'] = year
     context['fixeds_accounts'] = Spent.objects.filter(
         user=request.user, fixed_account=True
-    ).values('pk', 'spent', 'date', 'value')
+    ).values('pk', 'spent', 'value')
 
-    context['spents'] = Spent.objects.filter(
-        user=request.user, month=month_number, year=year, fixed_account=False
-    ).values('pk', 'spent', 'date', 'value')
+    context['spents'] = (
+        Spent.objects.filter(
+            user=request.user, year=year, fixed_account=False, parceled_out=True
+        )
+    ).values('pk', 'spent', 'value', 'parceled_out', 'number_plots')
 
     income = (
         Income.objects.filter(user=request.user, month=month_number, year=year)
@@ -151,8 +153,8 @@ def month_view(request, month):
                     month=month_number,
                     year=year,
                 )
-                .aggregate(Sum('value'))
-                .get('value__sum')
+                .aggregate(total=Sum('value'))
+                .get('total')
             )
             context['balance'] = (
                 income['income'] - context['total_spents'] - context['percent']
