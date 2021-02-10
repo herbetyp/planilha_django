@@ -27,7 +27,6 @@ jobs:
 
     - name: Install Poetry
     - uses: Gr1N/setup-poetry@v4
-    - run: poetry --version
 
     - name: Set Poetry Config
       run: |
