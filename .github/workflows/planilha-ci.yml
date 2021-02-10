@@ -16,29 +16,17 @@ jobs:
         ports: ['5432:5432']
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python 3.8
+    - uses: actions/checkout@v2
+    - name: Setup Python 3.8
       uses: actions/setup-python@v1
       with:
         python-version: 3.8
 
     - name: Copying configurations
-      run: |
-        cp contrib/env-sample .env
+      run: cp contrib/env-sample .env
 
     - name: Install Poetry
-      uses: dschep/install-poetry-action@v1.3
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
-
-    - name: Cache Poetry virtualenv
-      uses: actions/cache@v2
-      id: cache
-      with:
-        path: ~/.virtualenvs
-        key: poetry-${{ hashFiles('**/poetry.lock') }}
-        restore-keys: |
-          poetry-${{ hashFiles('**/poetry.lock') }}
+      uses: Gr1N/setup-poetry@v4
 
     - name: Set Poetry Config
       run: |
@@ -47,7 +35,6 @@ jobs:
 
     - name: Install Dependencies
       run: poetry install
-      if: steps.cache.outputs.cache-hit != 'true'
 
     - name: Lynt with Flake8
       run: |
@@ -56,8 +43,9 @@ jobs:
     - name: Tests with Pytest
       run: |
         poetry run pytest --cov=planilha
+
     - name: Posting Coverage
       env:
-        CODECOV_TOKEN: "90036097-c686-4c7d-ac52-a4a9daef15c2"
+        codecov_token: ${{ secrets.CODECOV_TOKEN }}
       run: |
         poetry run codecov
