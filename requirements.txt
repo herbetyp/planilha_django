@@ -4,9 +4,9 @@ asgiref==3.2.10; python_version >= "3.6" \
 dj-database-url==0.5.0 \
     --hash=sha256:4aeaeb1f573c74835b0686a2b46b85990571159ffc21aa57ecd4d1e1cb334163 \
     --hash=sha256:851785365761ebe4994a921b433062309eb882fedd318e1b0fcecc607ed02da9
-django-widget-tweaks==1.4.8 \
-    --hash=sha256:9f91ca4217199b7671971d3c1f323a2bec71a0c27dec6260b3c006fa541bc489 \
-    --hash=sha256:f80bff4a8a59b278bb277a405a76a8b9a884e4bae7a6c70e78a39c626cd1c836
+django-widget-tweaks==1.4.11 \
+    --hash=sha256:01b911a1b47629de0a3a3097774798dee4eb703b94d41666929f688d5f77c723 \
+    --hash=sha256:07674e32031eda81077f0b8e390ce78d1d415e700cedd0396ef0ce452e95b94d
 django==3.1.2; python_version >= "3.6" \
     --hash=sha256:c93c28ccf1d094cbd00d860e83128a39e45d2c571d3b54361713aaaf9a94cac4 \
     --hash=sha256:a2127ad0150ec6966655bedf15dbbff9697cc86d61653db2da1afa506c0b04cc
